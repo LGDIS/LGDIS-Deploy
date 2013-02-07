@@ -1,0 +1,9 @@
+role :app, "192.168.0.1", :user => rails_user
+role :proxy, "192.168.0.2", :no_release => true
+role :web, "192.168.0.3", :no_release => true
+role :db, "192.168.0.4", {:primary => true, :no_release => true}
+
+#set :ntp_server, "change.it"
+set :unicorn_port, 3100
+set :unicorn_pid_dir, "tmp/pids"
+set :unicorn_log_dir, "log"

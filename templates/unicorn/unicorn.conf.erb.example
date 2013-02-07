@@ -1,0 +1,37 @@
+rails_env = '<%= rails_env %>'
+worker_processes 4
+port = <%= unicorn_port %>
+listen port, :tcp_nopush => true
+timeout 60
+pid "<%= unicorn_pid_dir %>/unicorn.#{port}.pid"
+preload_app  true
+stderr_path "<%= unicorn_log_dir %>/unicorn.#{port}.log"
+stdout_path "<%= unicorn_log_dir %>/unicorn.#{port}.log"
+
+working_directory "<%= deploy_to %>/current"
+
+before_fork do |server, worker|
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.connection.disconnect!
+
+   old_pid = "#{server.config[:pid]}.oldbin"
+   if old_pid != server.pid
+     begin
+       sig = (worker.nr + 1) >= server.worker_processes ? :QUIT : :TTOU
+       Process.kill(sig, File.read(old_pid).to_i)
+     rescue Errno::ENOENT, Errno::ESRCH
+     end
+   end
+   sleep 1
+
+end
+
+
+after_fork do |server, worker|
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.establish_connection
+
+  if worker.nr == 0
+    `echo 'unicorn restarted  at' \`date\` on \`hostname\`   | mail -s '<%= application %> unicorn restarted' report `
+  end
+end

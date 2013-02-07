@@ -1,0 +1,15 @@
+## for production 
+role :app, "0.0.0.0", :user => rails_user
+role :proxy, "0.0.0.0", :no_release => true
+role :web, "0.0.0.0", :no_release => true
+role :db, "0.0.0.0", {:primary => true, :no_release => true}
+
+set :ntp_server, "ntp.jst.mfeed.ad.jp"
+set :unicorn_port, 3100
+set :unicorn_pid_dir, "tmp/pids"
+set :unicorn_log_dir, "log"
+
+set :user, "deploy_user for production"
+set (:password) do
+  Capistrano::CLI.password_prompt "Set password for production server: "
+end

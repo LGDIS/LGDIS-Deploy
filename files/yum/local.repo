@@ -1,7 +1,0 @@
-[local]
-name=local - Base
-#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
-baseurl=http://203.138.187.103/yum/
-gpgcheck=0
-#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
-
